@@ -1,0 +1,433 @@
+[colors]
+accent = #fba922
+white = #ffffff
+grey = #555555
+
+;info = #15a2b8
+info = #0a5763
+;primary = #007bfe
+primary = #003268
+;primary_dark = #0051a8
+primary_dark = #002956
+;success = #28a745
+success = #134c1f
+;success_dark = #218838
+success_dark = #0c3013
+warning = #ffc109
+danger = #911722
+danger_dark = #590e15
+
+[margins]
+left = 0
+right = 4
+default = 2
+
+[bar/bottom]
+monitor = eDP-1
+bottom = true
+width = 100%
+height = 30
+
+enable-ipc = true
+
+background = #1c1c1c
+foreground = #eefafafa
+
+overline-size = 2
+overline-color = ${colors.accent}
+underline-size = 4
+underline-color = ${colors.accent}
+
+border-size = 0
+radius = 10
+
+spacing = 3
+padding-left = 0
+padding-right = 0
+; module-margin-left = 0
+; module-margin-right = 6
+
+font-0 = NotoSans-Regular:size=8;0
+font-1 = Unifont:size=5;0
+font-2 = FontAwesome:size=12;1
+font-3 = NotoSans-Regular:size=8;-1
+font-4 = Unifont:size=5;0
+font-5 = Termsynu:size=7;0
+
+modules-left = i3 previous playpause next spotify
+modules-center =
+modules-right = wireless-network battery pulseaudio backlight cpu memory clock terminal atom firefox chromium spotify-app nautilus record screenshot parameters power
+
+wm-restack = bspwm
+
+; ///////////////////////////////////// module/i3
+[module/i3]
+type = internal/i3
+format = <label-state> <label-mode>
+
+pin-workspaces = true
+
+reverse-scroll = true
+wrapping-scroll = false
+
+label-dimmed-underline = ${root.background}
+
+label-focused = %name%
+label-focused-foreground = #f3f3f3
+label-focused-background = #3f3f3f
+label-focused-underline = ${colors.primary_dark}
+label-focused-font = 4
+label-focused-padding = 4
+
+label-unfocused = %name%
+label-unfocused-underline = ${colors.grey}
+label-unfocused-font = 4
+label-unfocused-padding = 4
+
+label-urgent = %name%
+label-urgent-underline = ${colors.warning}
+label-urgent-font = 4
+label-urgent-padding = 4
+
+label-visible = %name%
+label-visible-foreground = #55ffffff
+label-visible-font = 4
+label-visible-padding = 4
+
+; ///////////////////////////////////// module/previous
+[module/previous]
+type = custom/script
+interval = 1
+
+format = "%{T3}<label>"
+
+format-padding = 3
+format-overline = ${colors.success_dark}
+format-background = ${colors.success}
+format-underline = ${colors.success_dark}
+format-margin-left = ${margins.right}
+format-margin-right = 0
+
+exec = echo ""
+exec-if = pgrep -x "spotify" > /dev/null
+
+click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
+
+; ///////////////////////////////////// module/next
+[module/next]
+type = custom/script
+interval = 1
+
+format = "%{T3}<label>"
+
+format-padding = 3
+format-overline = ${colors.success_dark}
+format-background = ${colors.success}
+format-underline = ${colors.success_dark}
+format-margin = 0
+
+exec = echo ""
+exec-if = pgrep -x "spotify" > /dev/null
+
+click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
+
+; ///////////////////////////////////// module/playpause
+[module/playpause]
+type = custom/ipc
+
+format-padding = 3
+format-overline = ${colors.success_dark}
+format-background = ${colors.success}
+format-underline = ${colors.success_dark}
+format-margin = 0
+
+hook-0 = echo ""
+hook-1 = echo ""
+hook-2 = echo ""
+
+initial = 1
+click-left = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+
+; ///////////////////////////////////// module/spotify
+[module/spotify]
+type = custom/ipc
+
+hook-0 = echo ""
+hook-1 = /usr/bin/python3 /home/martin/.config/polybar/spotify/spotify_status.py
+
+initial = 1
+
+format-padding = 3
+format-overline = ${colors.success_dark}
+format-background = ${colors.success}
+format-underline = ${colors.success_dark}
+format-margin = 0
+
+line-size = 1
+
+; ///////////////////////////////////// module/pulseaudio
+[module/pulseaudio]
+type = internal/pulseaudio
+master-mixer = Master
+speaker-mixer = Speaker
+headphone-mixer = Headphone
+headphone-id = 9
+
+format-volume = <ramp-volume><label-volume>
+format-volume-underline = ${colors.primary_dark}
+format-volume-margin = ${margins.default}
+
+format-muted = <label-muted>
+format-muted-underline = ${colors.warning}
+format-muted-margin = ${margins.default}
+
+label-volume = %percentage%%
+
+label-muted =   00%
+
+ramp-volume-0 = 
+ramp-volume-1 = 
+
+; ///////////////////////////////////// module/network
+[module/wireless-network]
+type = internal/network
+interface = wlp2s0
+interval = 2.0
+ping-interval = 10
+
+format-connected = <label-connected>
+format-connected-margin = ${margins.default}
+format-connected-underline = ${colors.primary_dark}
+
+format-disconnected-margin = ${margins.default}
+format-disconnected-underline = ${colors.danger}
+
+label-connected =  %signal%% at %essid% (%local_ip%)
+
+label-disconnected = WTF? There is no WIFI here, run for your life
+
+; ///////////////////////////////////// module/battery
+[module/battery]
+type = internal/battery
+full-at = 98
+
+time-format = %H:%M
+
+format-full =   <label-full>
+format-full-margin = ${margins.default}
+format-full-underline = ${colors.success}
+
+format-charging =   <label-charging>
+format-charging-margin = ${margins.default}
+format-charging-underline = ${colors.success_dark}
+
+format-discharging = <ramp-capacity><label-discharging>
+format-discharging-margin = ${margins.default}
+format-discharging-underline = ${colors.warning}
+
+label-full = Full %percentage%%
+
+label-charging = Plugged %percentage%%
+
+label-discharging = %percentage%% %time%
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+
+; ///////////////////////////////////// module/backlight
+[module/backlight]
+type = internal/backlight
+card = intel_backlight
+
+format = <ramp><label>
+format-underline = ${colors.primary_dark}
+format-margin = ${margins.default}
+
+ramp-0 = 
+
+label = %percentage%%
+interactive = true
+
+; ///////////////////////////////////// module/cpu
+[module/cpu]
+type = internal/cpu
+interval = 1.5
+
+format = <label><ramp-coreload>
+format-margin = ${margins.default}
+
+label =  CPU:
+
+ramp-coreload-0 = ▁
+ramp-coreload-0-foreground = ${colors.success}
+ramp-coreload-1 = ▂
+ramp-coreload-1-foreground = ${colors.success}
+ramp-coreload-2 = ▃
+ramp-coreload-2-foreground = ${colors.success_dark}
+ramp-coreload-3 = ▄
+ramp-coreload-3-foreground = ${colors.success_dark}
+ramp-coreload-4 = ▅
+ramp-coreload-4-foreground = ${colors.warning}
+ramp-coreload-5 = ▆
+ramp-coreload-5-foreground = ${colors.warning}
+ramp-coreload-6 = ▇
+ramp-coreload-6-foreground = ${colors.danger}
+ramp-coreload-7 = █
+ramp-coreload-7-foreground = ${colors.danger}
+
+; ///////////////////////////////////// module/memory
+[module/memory]
+type = internal/memory
+interval = 1.5
+format = <label><bar-used>
+format-margin = ${margins.default}
+
+label =  RAM:
+
+bar-used-width = 20
+bar-used-gradient = true
+bar-used-foreground-0 = ${colors.success}
+bar-used-foreground-1 = ${colors.success_dark}
+bar-used-foreground-2 = ${colors.warning}
+bar-used-foreground-3 = ${colors.danger}
+bar-used-indicator = █
+bar-used-indicator-font = 5
+bar-used-indicator-foreground = #fff
+bar-used-fill = █
+bar-used-fill-font = 5
+bar-used-empty = █
+bar-used-empty-font = 5
+bar-used-empty-foreground = #44
+
+; ///////////////////////////////////// module/clock
+[module/clock]
+type = internal/date
+interval = 5
+
+format-margin = ${margins.default}
+
+date =  %%{F#bb}%Y-%m-%d%%{F-}    %%{F#ee}%H:%M%%{F-}
+
+; ///////////////////////////////////// module/terminal
+[module/terminal]
+type = custom/text
+content = 
+
+content-overline = ${colors.primary_dark}
+content-background = ${colors.primary}
+content-underline = ${colors.primary_dark}
+content-padding = 3
+
+click-left = "i3-sensible-terminal &"
+
+; ///////////////////////////////////// module/firefox
+[module/firefox]
+type = custom/text
+content = 
+
+content-overline = ${colors.primary_dark}
+content-background = ${colors.primary}
+content-underline = ${colors.primary_dark}
+content-padding = 3
+
+click-left = "firefox &"
+
+; ///////////////////////////////////// module/atom
+[module/atom]
+type = custom/text
+content = 
+
+content-overline = ${colors.primary_dark}
+content-background = ${colors.primary}
+content-underline = ${colors.primary_dark}
+content-padding = 3
+
+click-left = "atom &"
+
+; ///////////////////////////////////// module/chromium
+[module/chromium]
+type = custom/text
+content = 
+
+content-overline = ${colors.primary_dark}
+content-background = ${colors.primary}
+content-underline = ${colors.primary_dark}
+content-padding = 3
+
+click-left = "chromium-browser &"
+
+; ///////////////////////////////////// module/spotify-app
+[module/spotify-app]
+type = custom/text
+content = 
+
+content-overline = ${colors.primary_dark}
+content-background = ${colors.primary}
+content-underline = ${colors.primary_dark}
+content-padding = 3
+
+click-left = "spotify &"
+
+; ///////////////////////////////////// module/nautilus
+[module/nautilus]
+type = custom/text
+content = 
+
+content-overline = ${colors.primary_dark}
+content-background = ${colors.primary}
+content-underline = ${colors.primary_dark}
+content-padding = 3
+
+click-left = "nautilus --no-desktop --new-window &"
+
+; ///////////////////////////////////// module/record
+[module/record]
+type = custom/text
+content = 
+
+content-overline = ${colors.primary_dark}
+content-background = ${colors.primary}
+content-underline = ${colors.primary_dark}
+content-padding = 3
+
+click-left = "peek &"
+
+; ///////////////////////////////////// module/screenshot
+[module/screenshot]
+type = custom/text
+content = 
+
+content-overline = ${colors.primary_dark}
+content-background = ${colors.primary}
+content-underline = ${colors.primary_dark}
+content-padding = 3
+
+click-left = "gnome-screenshot -i &"
+
+; ///////////////////////////////////// module/parameters
+[module/parameters]
+type = custom/text
+content = 
+
+content-overline = ${colors.primary_dark}
+content-background = ${colors.primary}
+content-underline = ${colors.primary_dark}
+content-padding = 3
+
+click-left = "gnome-control-center &"
+
+; ///////////////////////////////////// module/power
+[module/power]
+type = custom/text
+content = 
+
+content-overline = ${colors.danger_dark}
+content-background = ${colors.danger}
+content-underline = ${colors.danger_dark}
+content-padding = 3
+content-margin-right = 0
+
+click-left = i3-msg exit

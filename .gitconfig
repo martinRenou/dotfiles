@@ -1,0 +1,16 @@
+[user]
+	email = martin.renou@gmail.com
+	name = martinRenou
+[alias]
+	co = checkout
+	br = branch
+	ci = commit --signoff
+	st = status
+	cl = clone
+	sh = show
+	update = "!git pull upstream master; git push origin master"
+	last = log -4
+	undo = reset HEAD~
+	unstash = stash apply
+[core]
+	editor = vim

@@ -4,13 +4,18 @@
 [alias]
 	co = checkout
 	br = branch
-	ci = commit --signoff
+	ci = commit -n
 	st = status
 	cl = clone
 	sh = show
-	update = "!git pull upstream master; git push origin master"
+	psh = push
+	pu = push
+	up = "!(git pull upstream master || git pull upstream main) && (git push origin master || git push origin main)"
 	last = log -4
 	undo = reset HEAD~
 	unstash = stash apply
+	is = "!gh issue"
+	pr = "!gh pr"
+	re = "!gh repo"
 [core]
 	editor = vim

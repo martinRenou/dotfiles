@@ -19,3 +19,5 @@
 	re = "!gh repo"
 [core]
 	editor = vim
+[credential]
+	helper = /usr/libexec/git-core/git-credential-libsecret

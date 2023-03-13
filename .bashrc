@@ -89,24 +89,34 @@ complete -W "`ls $HOME/github | tr '\n' ' '`" activate
 
 create () {
     micromamba deactivate
-    micromamba create --name ${PWD##*/} pip nodejs yarn cmake compilers build twine jupyter-packaging flake8 $* --yes -c conda-forge
-    micromamba activate ${PWD##*/}
+    micromamba create --name ${PWD##*/} pip hatchling hatch-jupyter-builder nodejs=16 yarn=1 cmake compilers build twine jupyterlab-night jupyterlab-day jupyter-packaging black flake8 $* --yes -c conda-forge
+    activate ${PWD##*/}
 }
 
+# Ask Jupyter to ignore user prefixes
+export JUPYTER_PREFER_ENV_PATH=1
+
 # Shameless aliases
-alias gut="git"
-alias got="git"
-alias gt="git"
-alias gi="git"
-alias g="git"
+alias gut="git" && complete -F _complete_alias gut
+alias got="git" && complete -F _complete_alias got
+alias gt="git" && complete -F _complete_alias gt
+alias gi="git" && complete -F _complete_alias gi
+alias it="git" && complete -F _complete_alias it
+alias g="git" && complete -F _complete_alias g
+alias ci="git ci" && complete -F _complete_alias ci
+alias st="git st" && complete -F _complete_alias st
+alias co="git co" && complete -F _complete_alias co
+alias undo="git undo" && complete -F _complete_alias undo
+alias show="git show" && complete -F _complete_alias show
+alias push="git push" && complete -F _complete_alias push
 
 alias sha="sha256sum"
 alias untar="tar zxvf"
 
 alias code="codium"
 
-alias conda="micromamba"
-alias mamba="micromamba"
+alias conda="micromamba" && complete -F _complete_alias conda
+alias mamba="micromamba" && complete -F _complete_alias mamba
 
 install () {
     micromamba install -c conda-forge $*
